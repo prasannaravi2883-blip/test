@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Featured Products - Nexus</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f8f9ff;
+      color: #0b1c30;
+    }
+
+    .container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    /* Header Section */
+    .header-section {
+      background: #eff4ff;
+      padding: 40px 0;
+      margin-top: 112px;
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .badge {
+      background: black;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: bold;
+      letter-spacing: 0.55px;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0px 1px 1px rgba(0,0,0,0.05);
+    }
+
+    .badge::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: #5bb8fe;
+      border-radius: 12px;
+    }
+
+    .trust-badges {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      background: white;
+      padding: 12px;
+      border-radius: 8px;
+      box-shadow: 0px 1px 1px rgba(0,0,0,0.05);
+    }
+
+    .trust-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 8px;
+      border-right: 1px solid #dce9ff;
+    }
+
+    .trust-badge:last-child {
+      border-right: none;
+    }
+
+    .trust-badge-text {
+      font-size: 12px;
+      color: #45464d;
+      font-weight: 600;
+    }
+
+    .trust-badge-value {
+      font-size: 18px;
+      font-weight: 600;
+      color: #0b1c30;
+      display: block;
+    }
+
+    .trust-badge-value.highlight {
+      color: #006398;
+    }
+
+    .header-title {
+      margin-bottom: 8px;
+    }
+
+    .header-title h1 {
+      font-size: 56px;
+      font-weight: bold;
+      line-height: 64px;
+      letter-spacing: -1.4px;
+      margin-bottom: 8px;
+    }
+
+    .header-title p {
+      font-size: 18px;
+      color: #45464d;
+      line-height: 29.25px;
+      max-width: 768px;
+    }
+
+    /* Filter Bar */
+    .filter-bar {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(6px);
+      padding: 12px 0;
+      margin: 12px 0 40px 0;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      box-shadow: 0px 1px 2px rgba(0,0,0,0.05);
+    }
+
+    .filter-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .filter-tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+    }
+
+    .filter-btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.24px;
+      white-space: nowrap;
+      cursor: pointer;
+      background: #e5eeff;
+      color: #0b1c30;
+      transition: all 0.2s;
+    }
+
+    .filter-btn.active {
+      background: black;
+      color: white;
+      box-shadow: 0px 1px 1px rgba(0,0,0,0.05);
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .sort-select {
+      background: #eff4ff;
+      border: none;
+      padding: 4px 16px 4px 4px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      color: #0b1c30;
+    }
+
+    /* Product Grid */
+    .products-section {
+      margin: 40px 0;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      margin-bottom: 40px;
+    }
+
+    .product-card {
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .product-image-container {
+      position: relative;
+      aspect-ratio: 1;
+      background: #eff4ff;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .product-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .product-badge {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: black;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 2px;
+      font-size: 11px;
+      font-weight: bold;
+      letter-spacing: 0.88px;
+      text-transform: uppercase;
+      z-index: 2;
+    }
+
+    .product-badge.featured {
+      background: #006398;
+    }
+
+    .product-badge.best {
+      background: #131b2e;
+    }
+
+    .wishlist-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(6px);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 3;
+    }
+
+    .product-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .product-category {
+      font-size: 11px;
+      font-weight: bold;
+      color: #006398;
+      letter-spacing: 0.55px;
+      text-transform: uppercase;
+    }
+
+    .product-rating {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      font-size: 12px;
+    }
+
+    .product-rating-star::before {
+      content: '★';
+      color: #ffc107;
+    }
+
+    .product-rating-value {
+      font-weight: bold;
+      color: #0b1c30;
+    }
+
+    .product-rating-count {
+      font-size: 13px;
+      color: #45464d;
+    }
+
+    .product-name {
+      font-size: 18px;
+      font-weight: 600;
+      color: #0b1c30;
+      line-height: 24px;
+      margin: 4px 0 8px 0;
+    }
+
+    .product-price-section {
+      margin-bottom: 8px;
+      position: relative;
+      height: 33px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .product-price {
+      font-size: 28px;
+      font-weight: bold;
+      color: #0b1c30;
+      letter-spacing: -0.56px;
+    }
+
+    .product-original-price {
+      font-size: 13px;
+      color: #76777d;
+      text-decoration: line-through;
+    }
+
+    .product-discount {
+      background: #eff4ff;
+      padding: 4px 8px;
+      border-radius: 2px;
+      font-size: 11px;
+      font-weight: bold;
+      color: #069669;
+      letter-spacing: 0.88px;
+      text-transform: uppercase;
+    }
+
+    .product-description {
+      font-size: 13px;
+      color: #45464d;
+      line-height: 21.13px;
+      margin-bottom: 12px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .product-features {
+      background: #eff4ff;
+      border-radius: 4px;
+      padding: 8px;
+      margin-bottom: 12px;
+    }
+
+    .feature-item {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 4px;
+      font-size: 13px;
+      color: #0b1c30;
+      line-height: 18px;
+    }
+
+    .feature-item::before {
+      content: '✓';
+      color: #006398;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    .product-quote {
+      background: rgba(220, 233, 255, 0.4);
+      border-radius: 4px;
+      padding: 8px;
+      margin-bottom: 12px;
+      font-size: 13px;
+      font-style: italic;
+      color: #45464d;
+      line-height: 17.88px;
+    }
+
+    .product-actions {
+      display: grid;
+      grid-template-columns: 1fr 40px;
+      gap: 8px;
+      margin-top: auto;
+    }
+
+    .btn-primary {
+      background: black;
+      color: white;
+      border: none;
+      padding: 12px 16px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      letter-spacing: 0.14px;
+      transition: background 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: #1a1a1a;
+    }
+
+    .btn-secondary {
+      background: #e5eeff;
+      color: #0b1c30;
+      border: none;
+      padding: 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .btn-secondary:hover {
+      background: #dce9ff;
+    }
+
+    /* Trust Section */
+    .trust-section {
+      background: #eff4ff;
+      padding: 64px 0;
+    }
+
+    .trust-section-header {
+      margin-bottom: 40px;
+    }
+
+    .trust-section-title {
+      font-size: 11px;
+      font-weight: bold;
+      color: #006398;
+      letter-spacing: 0.55px;
+      text-transform: uppercase;
+      margin-bottom: 7px;
+    }
+
+    .trust-section-heading {
+      font-size: 36px;
+      font-weight: 600;
+      color: #0b1c30;
+      letter-spacing: -0.72px;
+      line-height: 44px;
+      margin-bottom: 16px;
+    }
+
+    .trust-section-desc {
+      font-size: 15px;
+      color: #45464d;
+      line-height: 22px;
+      max-width: 448px;
+    }
+
+    .trust-cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+
+    .trust-card {
+      background: white;
+      border-radius: 8px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .trust-card-icon {
+      width: 48px;
+      height: 48px;
+      background: #e5eeff;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+
+    .trust-card-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #0b1c30;
+      line-height: 24px;
+      margin: 8px 0;
+    }
+
+    .trust-card-desc {
+      font-size: 15px;
+      color: #45464d;
+      line-height: 22px;
+    }
+
+    .trust-card-note {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-top: 16px;
+      padding-top: 16px;
+      font-size: 11px;
+      font-weight: bold;
+      color: #006398;
+      letter-spacing: 0.88px;
+      text-transform: uppercase;
+    }
+
+    /* Form Section */
+    .form-section {
+      background: white;
+      padding: 60px 0;
+      margin: 60px 0;
+    }
+
+    .form-container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .form-title {
+      font-size: 32px;
+      font-weight: bold;
+      color: #0b1c30;
+      margin-bottom: 32px;
+      text-align: center;
+      letter-spacing: -0.64px;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: #0b1c30;
+      margin-bottom: 8px;
+      letter-spacing: 0.28px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #dce9ff;
+      border-radius: 6px;
+      font-size: 14px;
+      color: #0b1c30;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #006398;
+      background: #f8f9ff;
+    }
+
+    .form-input::placeholder {
+      color: #76777d;
+    }
+
+    .form-submit {
+      width: 100%;
+      padding: 14px 20px;
+      background: #006398;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: 0.32px;
+      transition: background 0.2s;
+      margin-top: 32px;
+    }
+
+    .form-submit:hover {
+      background: #004a7a;
+    }
+
+    .form-submit:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .form-message {
+      margin-top: 16px;
+      padding: 12px 16px;
+      border-radius: 6px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 500;
+      display: none;
+    }
+
+    .form-message.success {
+      background: #d4edda;
+      color: #155724;
+      display: block;
+    }
+
+    .form-message.error {
+      background: #f8d7da;
+      color: #721c24;
+      display: block;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .product-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .trust-cards {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 0 16px;
+      }
+      .header-title h1 {
+        font-size: 36px;
+      }
+      .product-grid {
+        grid-template-columns: 1fr;
+      }
+      .trust-cards {
+        grid-template-columns: 1fr;
+      }
+      .header-top {
+        flex-direction: column;
+        gap: 16px;
+      }
+      .filter-content {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header Section -->
+  <section class="header-section">
+    <div class="container">
+      <div class="header-top">
+        <div class="badge">HANDPICKED COLLECTION • LIMITED TIME DEALS</div>
+        <div class="trust-badges">
+          <div class="trust-badge">
+            <span class="trust-badge-value">6</span>
+            <span class="trust-badge-text">CURATED<br>DROPS</span>
+          </div>
+          <div class="trust-badge">
+            <span class="trust-badge-value highlight">Up to 41%</span>
+            <span class="trust-badge-text">INSTANT<br>SAVINGS</span>
+          </div>
+          <div class="trust-badge">
+            <span class="trust-badge-value">4.8 ★</span>
+            <span class="trust-badge-text">AVG.<br>SATISFACTION</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-title">
+        <h1>Featured Products</h1>
+        <p>Discover top-rated tech, premium apparel, and high-performance computing crafted for work, lifestyle, and everyday comfort.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filter Bar -->
+  <div class="filter-bar">
+    <div class="container">
+      <div class="filter-content">
+        <div class="filter-tabs">
+          <button class="filter-btn active">All Products (6)</button>
+          <button class="filter-btn">Apparel & Fashion (2)</button>
+          <button class="filter-btn">Smartphones (2)</button>
+          <button class="filter-btn">Laptops (2)</button>
+        </div>
+        <div class="toolbar">
+          <span style="font-size: 12px; font-weight: 600; color: #45464d;">Showing 6 of 6 items</span>
+          <select class="sort-select">
+            <option>Featured First</option>
+            <option>Price: Low to High</option>
+            <option>Price: High to Low</option>
+            <option>Newest</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Products Section -->
+  <section class="products-section">
+    <div class="container">
+      <div class="product-grid">
+        <!-- Product 1 -->
+        <div class="product-card">
+          <div class="product-image-container">
+            <img src="https://www.figma.com/api/mcp/asset/3c1d950f-971d-4c80-830a-57aeab6941db.png" alt="Men's Classic Cotton Shirt" class="product-image">
+            <div class="product-badge">WARDROBE ESSENTIAL</div>
+            <button class="wishlist-btn">❤️</button>
+          </div>
+          <div class="product-meta">
+            <span class="product-category">APPAREL & FASHION</span>
+            <div class="product-rating">
+              <span class="product-rating-star"></span>
+              <span class="product-rating-value">4.8</span>
+              <span class="product-rating-count">(340)</span>
+            </div>
+          </div>
+          <h3 class="product-name">Men's Classic Cotton Shirt</h3>
+          <div class="product-price-section">
+            <span class="product-price">₹899</span>
+            <span class="product-original-price">₹1,499</span>
+            <span class="product-discount">40% OFF</span>
+          </div>
+          <p class="product-description">A wardrobe essential that works for almost any occasion. Made from soft, breathable cotton, this shirt keeps you...</p>
+          <div class="product-features">
+            <div class="feature-item">100% breathable cotton fabric</div>
+            <div class="feature-item">Regular fit for everyday comfort</div>
+            <div class="feature-item">Durable stitching for long-lasting wear</div>
+          </div>
+          <div class="product-quote">"Comfortable from morning to evening, this shirt combines style and practicality without compromising on quality."</div>
+          <div class="product-actions">
+            <button class="btn-primary">🛒 Add to Cart</button>
+            <button class="btn-secondary">❤️</button>
+          </div>
+        </div>
+
+        <!-- Product 2 -->
+        <div class="product-card">
+          <div class="product-image-container">
+            <img src="https://www.figma.com/api/mcp/asset/fb48d605-037e-4b3d-8a03-6b20660800d4.png" alt="Women's Floral Summer Dress" class="product-image">
+            <div class="product-badge featured">TOP FASHION PICK</div>
+            <button class="wishlist-btn">❤️</button>
+          </div>
+          <div class="product-meta">
+            <span class="product-category">APPAREL & FASHION</span>
+            <div class="product-rating">
+              <span class="product-rating-star"></span>
+              <span class="product-rating-value">4.9</span>
+              <span class="product-rating-count">(512)</span>
+            </div>
+          </div>
+          <h3 class="product-name">Women's Floral Summer Dress</h3>
+          <div class="product-price-section">
+            <span class="product-price">₹1,299</span>
+            <span class="product-original-price">₹2,199</span>
+            <span class="product-discount">41% OFF</span>
+          </div>
+          <p class="product-description">Lightweight, elegant, and designed for everyday confidence. This floral dress features a flattering...</p>
+          <div class="product-features">
+            <div class="feature-item">Soft and lightweight fabric</div>
+            <div class="feature-item">Modern floral print</div>
+            <div class="feature-item">Comfortable all-day fit</div>
+          </div>
+          <div class="product-quote">"The combination of comfort and effortless style makes this one of our most popular fashion picks."</div>
+          <div class="product-actions">
+            <button class="btn-primary">🛒 Add to Cart</button>
+            <button class="btn-secondary">❤️</button>
+          </div>
+        </div>
+
+        <!-- Product 3 -->
+        <div class="product-card">
+          <div class="product-image-container">
+            <img src="https://www.figma.com/api/mcp/asset/2bb24707-c1f5-4aac-ae41-0123b8604c68.png" alt="Nova X12 Smartphone" class="product-image">
+            <div class="product-badge best">BEST VALUE 2026</div>
+            <button class="wishlist-btn">❤️</button>
+          </div>
+          <div class="product-meta">
+            <span class="product-category">ELECTRONICS & MOBILE</span>
+            <div class="product-rating">
+              <span class="product-rating-star"></span>
+              <span class="product-rating-value">4.7</span>
+              <span class="product-rating-count">(890)</span>
+            </div>
+          </div>
+          <h3 class="product-name">Nova X12 Smartphone</h3>
+          <div class="product-price-section">
+            <span class="product-price">₹18,999</span>
+            <span class="product-original-price">₹24,999</span>
+            <span class="product-discount">Save ₹6,000</span>
+          </div>
+          <p class="product-description">Built for people who need speed, reliability, and a great camera without spending a fortune. The Nova X12...</p>
+          <div class="product-features">
+            <div class="feature-item">50MP AI Camera</div>
+            <div class="feature-item">5000mAh Battery</div>
+            <div class="feature-item">33W Fast Charge</div>
+          </div>
+          <div class="product-quote">"A dependable smartphone that balances performance, battery life, and photography at an affordable price."</div>
+          <div class="product-actions">
+            <button class="btn-primary">🛒 Add to Cart</button>
+            <button class="btn-secondary">❤️</button>
+          </div>
+        </div>
+
+        <!-- Product 4 -->
+        <div class="product-card">
+          <div class="product-image-container">
+            <img src="https://www.figma.com/api/mcp/asset/2bb24707-c1f5-4aac-ae41-0123b8604c68.png" alt="Apex Pro 5G Smartphone" class="product-image">
+            <div class="product-badge featured">FLAGSHIP PERFORMER</div>
+            <button class="wishlist-btn">❤️</button>
+          </div>
+          <div class="product-meta">
+            <span class="product-category">ELECTRONICS & MOBILE</span>
+            <div class="product-rating">
+              <span class="product-rating-star"></span>
+              <span class="product-rating-value">4.9</span>
+              <span class="product-rating-count">(1,240)</span>
+            </div>
+          </div>
+          <h3 class="product-name">Apex Pro 5G Smartphone</h3>
+          <div class="product-price-section">
+            <span class="product-price">₹29,999</span>
+            <span class="product-original-price">₹37,999</span>
+            <span class="product-discount">Save ₹8,000</span>
+          </div>
+          <p class="product-description">Designed for users who want premium features and seamless performance. Whether you're gaming...</p>
+          <div class="product-features">
+            <div class="feature-item">Dual 5G</div>
+            <div class="feature-item">120Hz AMOLED</div>
+            <div class="feature-item">65W SuperCharge</div>
+          </div>
+          <div class="product-quote">"Premium performance without the premium price tag."</div>
+          <div class="product-actions">
+            <button class="btn-primary">🛒 Add to Cart</button>
+            <button class="btn-secondary">❤️</button>
+          </div>
+        </div>
+
+        <!-- Product 5 -->
+        <div class="product-card">
+          <div class="product-image-container">
+            <img src="https://www.figma.com/api/mcp/asset/fec6632a-01c4-4dcd-9676-1d2f09aa50bb.png" alt="TitanBook Air 14 Laptop" class="product-image">
+            <div class="product-badge best">ULTRALIGHT CHOICE</div>
+            <button class="wishlist-btn">❤️</button>
+          </div>
+          <div class="product-meta">
+            <span class="product-category">LAPTOPS & COMPUTING</span>
+            <div class="product-rating">
+              <span class="product-rating-star"></span>
+              <span class="product-rating-value">4.8</span>
+              <span class="product-rating-count">(645)</span>
+            </div>
+          </div>
+          <h3 class="product-name">TitanBook Air 14 Laptop</h3>
+          <div class="product-price-section">
+            <span class="product-price">₹54,999</span>
+            <span class="product-original-price">₹64,999</span>
+            <span class="product-discount">Save ₹10,000</span>
+          </div>
+          <p class="product-description">Lightweight enough to carry anywhere and powerful enough to handle your daily workload. Ideal for students...</p>
+          <div class="product-features">
+            <div class="feature-item">14-inch Full HD anti-glare display</div>
+            <div class="feature-item">All-day 14-hour battery with rapid charging</div>
+          </div>
+          <div class="product-quote">"Fast startup times, reliable performance, and a battery that lasts through a productive workday."</div>
+          <div class="product-actions">
+            <button class="btn-primary">🛒 Add to Cart</button>
+            <button class="btn-secondary">⚙️</button>
+          </div>
+        </div>
+
+        <!-- Product 6 -->
+        <div class="product-card">
+          <div class="product-image-container">
+            <img src="https://www.figma.com/api/mcp/asset/8569564b-d74c-4bbb-ad82-80cc3549337b.png" alt="TitanBook Pro 15 Laptop" class="product-image">
+            <div class="product-badge">PRO POWERHOUSE</div>
+            <button class="wishlist-btn">❤️</button>
+          </div>
+          <div class="product-meta">
+            <span class="product-category">LAPTOPS & COMPUTING</span>
+            <div class="product-rating">
+              <span class="product-rating-star"></span>
+              <span class="product-rating-value">4.9</span>
+              <span class="product-rating-count">(420)</span>
+            </div>
+          </div>
+          <h3 class="product-name">TitanBook Pro 15 Laptop</h3>
+          <div class="product-price-section">
+            <span class="product-price">₹79,999</span>
+            <span class="product-original-price">₹94,999</span>
+            <span class="product-discount">Save ₹15,000</span>
+          </div>
+          <p class="product-description">A performance-focused laptop built for professionals, creators, and multitaskers. Whether you're editing videos...</p>
+          <div class="product-features">
+            <div class="feature-item">Dedicated graphics card & Dual cooling chamber</div>
+            <div class="feature-item">Premium unibody CNC aluminum finish</div>
+          </div>
+          <div class="product-quote">"Powerful performance, premium design, and dependable reliability for demanding tasks."</div>
+          <div class="product-actions">
+            <button class="btn-primary">🛒 Add to Cart</button>
+            <button class="btn-secondary">⚙️</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trust Section -->
+  <section class="trust-section">
+    <div class="container">
+      <div class="trust-section-header">
+        <div class="trust-section-title">THE NEXUS GUARANTEE</div>
+        <h2 class="trust-section-heading">Why Shop With Us?</h2>
+        <p class="trust-section-desc">We combine factory-direct testing with enterprise fulfillment protocols to bring you unmatched peace of mind.</p>
+      </div>
+
+      <div class="trust-cards">
+        <div class="trust-card">
+          <div>
+            <div class="trust-card-icon">🚚</div>
+            <h3 class="trust-card-title">Fast Delivery</h3>
+            <p class="trust-card-desc">Get your orders delivered quickly with reliable shipping partners.</p>
+          </div>
+          <div class="trust-card-note">✓ 24-48 HR GUARANTEE NOTE</div>
+        </div>
+
+        <div class="trust-card">
+          <div>
+            <div class="trust-card-icon">🔒</div>
+            <h3 class="trust-card-title">Secure Payments</h3>
+            <p class="trust-card-desc">Multiple payment options with secure checkout protection.</p>
+          </div>
+          <div class="trust-card-note">✓ 256-BIT ENCRYPTION • UPI • CARDS</div>
+        </div>
+
+        <div class="trust-card">
+          <div>
+            <div class="trust-card-icon">↩️</div>
+            <h3 class="trust-card-title">Easy Returns</h3>
+            <p class="trust-card-desc">Simple and hassle-free return process for eligible products.</p>
+          </div>
+          <div class="trust-card-note">✓ 7-DAY DOORSTEP REPLACEMENT</div>
+        </div>
+
+        <div class="trust-card">
+          <div>
+            <div class="trust-card-icon">💬</div>
+            <h3 class="trust-card-title">Customer Support</h3>
+            <p class="trust-card-desc">Friendly support team ready to assist whenever you need help.</p>
+          </div>
+          <div class="trust-card-note">✓ LIVE CHAT & TOLL-FREE ACCESS</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Form Section -->
+  <section class="form-section">
+    <div class="form-container">
+      <h2 class="form-title">Get Updates & Offers</h2>
+      <form id="contactForm">
+        <div class="form-group">
+          <label class="form-label" for="name">Full Name</label>
+          <input type="text" id="name" name="name" class="form-input" placeholder="John Doe" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="email">Email Address</label>
+          <input type="email" id="email" name="email" class="form-input" placeholder="john@example.com" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="phone">Phone Number</label>
+          <input type="tel" id="phone" name="phone" class="form-input" placeholder="9876543210" required>
+        </div>
+
+        <button type="submit" class="form-submit" id="submitBtn">Submit</button>
+        <div id="formMessage" class="form-message"></div>
+      </form>
+    </div>
+  </section>
+
+  <script>
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzfsGEgX1A-_pzXw_lEk8U0EQyqrEemoBgZs_SL1JFnaz-fh1cLYxWtUN6Co8JsI2WX/exec';
+    
+    const form = document.getElementById('contactForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const formMessage = document.getElementById('formMessage');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const phone = document.getElementById('phone').value;
+
+      // Build URL with query parameters
+      const url = SCRIPT_URL + '?' + new URLSearchParams({
+        name: name,
+        email: email,
+        phone: phone
+      });
+
+      // Disable button during submission
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting...';
+
+      // Fetch without checking response - no-cors mode
+      fetch(url, {
+        method: 'GET',
+        mode: 'no-cors'
+      })
+        .then(() => {
+          showSuccess();
+          form.reset();
+        })
+        .catch(() => {
+          showError();
+        })
+        .finally(() => {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Submit';
+        });
+    });
+
+    function showSuccess() {
+      formMessage.className = 'form-message success';
+      formMessage.textContent = '✓ Thank you! Your information has been submitted successfully.';
+      setTimeout(() => {
+        formMessage.className = 'form-message';
+      }, 5000);
+    }
+
+    function showError() {
+      formMessage.className = 'form-message error';
+      formMessage.textContent = '✗ Something went wrong. Please try again.';
+      setTimeout(() => {
+        formMessage.className = 'form-message';
+      }, 5000);
+    }
+  </script>
+</body>
+</html>
